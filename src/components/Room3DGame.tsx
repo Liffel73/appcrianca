@@ -12,12 +12,12 @@ import * as Haptics from 'expo-haptics';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 // Componente de objeto 3D interativo
-function InteractiveObject({ position, scale, color, word, translation, onSelect, isSelected }: any) {
+function InteractiveObject({ object, position, scale, color, word, translation, onSelect, isSelected }: any) {
   const [hovered, setHovered] = useState(false);
 
   const handleClick = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    onSelect({ word, translation });
+    onSelect(object || { word, translation });
   };
 
   return (
@@ -179,6 +179,7 @@ export default function Room3DGame({ objects, onObjectClick, roomTheme = 'living
           {objects.map((obj) => (
             <InteractiveObject
               key={obj.id}
+              object={obj}
               position={obj.position}
               scale={obj.scale}
               color={obj.color}

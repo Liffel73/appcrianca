@@ -61,6 +61,8 @@ interface ConversationalPopupProps {
     word: string;
     translation: string;
     id?: string;
+    room?: string;
+    environment?: string;
   };
   isOpen: boolean;
   onClose: () => void;
@@ -140,8 +142,13 @@ export default function ConversationalPopup({
         objectWord: object?.word,
       });
 
-      if (!isOpen || !object || !object.word) {
-        console.log('[ConversationalPopup] ⏭️ Pulando loadIntroduction (condições não atendidas)');
+      if (!isOpen || !object || !object.word || !object.translation) {
+        console.log('[ConversationalPopup] ⏭️ Pulando loadIntroduction (condições não atendidas)', {
+          isOpen,
+          hasObject: !!object,
+          hasWord: !!object?.word,
+          hasTranslation: !!object?.translation
+        });
         return;
       }
 
@@ -203,6 +210,12 @@ export default function ConversationalPopup({
       executionStep = 'chamadaAPI';
       console.log('[ConversationalPopup] 📡 PASSO 3: Chamando API...');
 
+      // Verificar se cache está disponível
+      if (!cache || !cache.getCachedAIResponse) {
+        console.error('[ConversationalPopup] ❌ Cache não está disponível');
+        throw new Error('Cache context não inicializado');
+      }
+
       // Chamar API com cache E TIMEOUT AGRESSIVO
       const apiCallPromise = cache.getCachedAIResponse(
         `intro_${object.word}`,
@@ -212,8 +225,8 @@ export default function ConversationalPopup({
           const result = await apiService.ai.generateIntro({
             object_word: object.word,
             object_translation: object.translation,
-            room: object.room || 'Living Room',
-            environment: object.environment || 'Casa',
+            room: object?.room || 'Living Room',
+            environment: object?.environment || 'Casa',
             user_age: 10,
           });
           console.log('[ConversationalPopup] ✅ PASSO 5: API respondeu!', result);
@@ -526,6 +539,12 @@ export default function ConversationalPopup({
 
     try {
       console.log('[Popup] 🔊 Iniciando reprodução de áudio...');
+
+      // Verificar se contextos estão disponíveis
+      if (!cache || !cache.getCachedAudio) {
+        console.warn('[Popup] ⚠️ Cache não disponível, pulando áudio');
+        return;
+      }
 
       // Parar áudios anteriores (com proteção)
       try {

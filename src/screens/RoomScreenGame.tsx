@@ -109,6 +109,12 @@ export default function RoomScreenGame() {
     console.log('[RoomScreenGame] Setting selectedObject to:', object);
     console.log('[RoomScreenGame] Setting showObjectModal to: true');
 
+    // Verificar se o objeto é válido antes de continuar
+    if (!object || !object.word || !object.translation) {
+      console.error('[RoomScreenGame] Objeto inválido:', object);
+      return;
+    }
+
     setSelectedObject(object);
     setShowObjectModal(true);
 
@@ -170,15 +176,17 @@ export default function RoomScreenGame() {
       </View>
 
       {/* Conversational Popup - Chat AI */}
-      <ConversationalPopup
-        object={selectedObject || { word: '', translation: '', id: '' }}
-        isOpen={showObjectModal && selectedObject !== null}
-        onClose={handleCloseModal}
-        relatedWords={roomObjects.map(obj => ({
-          word: obj.word,
-          translation: obj.translation,
-        }))}
-      />
+      {selectedObject && (
+        <ConversationalPopup
+          object={selectedObject}
+          isOpen={showObjectModal && selectedObject !== null}
+          onClose={handleCloseModal}
+          relatedWords={roomObjects.map(obj => ({
+            word: obj.word,
+            translation: obj.translation,
+          }))}
+        />
+      )}
 
       {/* Mini mapa (opcional) */}
       <View style={styles.miniMap}>
