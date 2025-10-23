@@ -10,14 +10,19 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "requireFullScreen": true
+      "requireFullScreen": true,
+      "bundleIdentifier": "com.vior.kidsenglishapp",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "screenOrientation": "landscape"
+      "screenOrientation": "landscape",
+      "package": "com.vior.kidsenglishapp"
     },
     "web": {
       "bundler": "metro",
@@ -38,6 +43,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b568229c-e991-4b02-a734-c456eafb538a"
+      }
     }
   }
 }
